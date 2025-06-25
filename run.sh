@@ -101,7 +101,7 @@ start_frontend() {
         npm install
         npx expo install expo@latest
         npx expo install --fix
-        npx expo start --tunnel &
+        npx expo start &
     )
     sleep 15
 }
