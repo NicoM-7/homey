@@ -67,7 +67,7 @@ export default function AddPropertyImagesScreen() {
         );
 
         const body = { ...propertyData, images: processedImages };
-        const apiResponse = await post("/api/properties", body);
+        const apiResponse = await post("/api/properties/", body);
 
         setLoading(false);
         if (apiResponse) {

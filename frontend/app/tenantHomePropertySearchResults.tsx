@@ -79,7 +79,7 @@ export default function TenantHomePropertySearchResultsScreen() {
   const fetchPropertyRatings = async (propertyIds: number[]) => {
     try {
       // Assuming the backend supports an array for reviewedItemId:
-      const response = await get<any>("/api/reviews", { reviewType: "property", reviewedItemId: propertyIds });
+      const response = await get<any>("/api/reviews/", { reviewType: "property", reviewedItemId: propertyIds });
       const ratingsMap: { [key: number]: string } = {};
       if (response && response.data.length > 0) {
         // Group reviews by landlord id

@@ -35,7 +35,8 @@
         {
           "photosPermission": "Allow the app to access your photos for property management."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

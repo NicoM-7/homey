@@ -59,7 +59,7 @@ export default function LandlordHomeScreen() {
     };
 
     const fetchProperties = async () => {
-        const response = await get<any>("/api/properties");
+        const response = await get<any>("/api/properties/");
         if (response) {
             setProperties(response.data);
         }

@@ -1,17 +1,17 @@
-FROM node:22-alpine
+FROM python:3.12-alpine
 
 ARG PORT=8080
+ENV PORT=$PORT
 
 WORKDIR /backend
 
 COPY . .
 
-ENV PORT=$PORT
-
-RUN npm cache clean --force && npm install --verbose
+RUN pip install --no-cache-dir -r requirements.txt
 RUN chmod +x ./docker/scripts/wait-for-db.sh
 
 EXPOSE ${PORT}
 
-CMD ["node", "index.js"]
 ENTRYPOINT ["./docker/scripts/wait-for-db.sh"]
+
+CMD ["python", "main.py"]

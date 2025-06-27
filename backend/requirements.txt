@@ -1,0 +1,10 @@
+flask
+flask-cors
+flask-sqlalchemy
+pymysql
+python-dotenv
+PyJWT
+cryptography
+bcrypt
+email-validator
+password-validator

@@ -1,37 +1,38 @@
 version: "3.9"
 services:
-  express:
+  flask:
     build:
       context: ..
       dockerfile: ./docker/dockerfile
       args:
-        EXPRESS_PORT: ${EXPRESS_PORT}
-    image: express:latest
-    restart: always
+        FLASK_PORT: ${FLASK_PORT}
+    image: flask:latest
     ports:
-      - "${EXPRESS_PORT}:${EXPRESS_PORT}"
+      - "${FLASK_PORT}:${FLASK_PORT}"
     environment:
       - DB_NAME=${DB_NAME}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+      - DB_URL=${DB_URL}
       - HOST=${HOST}
-      - EXPRESS_PORT=${EXPRESS_PORT}
+      - FLASK_PORT=${FLASK_PORT}
       - DEVELOPMENT=${DEVELOPMENT}
       - JWT_SECRET=${JWT_SECRET}
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - SYNC=${SYNC}
-  postgres:
-    image: postgres:17-alpine
+  mysql:
+    image: mysql:8.0-debian
     restart: always
     ports:
-      - 5432:5432
+      - 3306:3306
     volumes:
       - ./dumps/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./postgres-data:/var/lib/postgresql/data
+      - ./mysql-data:/var/lib/mysql
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_DB=${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}

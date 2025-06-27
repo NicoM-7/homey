@@ -1,1249 +1,383 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 17.5
--- Dumped by pg_dump version 17.5
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: enum_Conversations_type; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_Conversations_type" AS ENUM (
-    'dm',
-    'group'
-);
-
-
-ALTER TYPE public."enum_Conversations_type" OWNER TO admin;
-
---
--- Name: enum_Participants_role; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_Participants_role" AS ENUM (
-    'tenant',
-    'landlord'
-);
-
-
-ALTER TYPE public."enum_Participants_role" OWNER TO admin;
-
---
--- Name: enum_Profiles_cleaningHabits; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_Profiles_cleaningHabits" AS ENUM (
-    '',
-    'Low',
-    'Medium',
-    'High'
-);
-
-
-ALTER TYPE public."enum_Profiles_cleaningHabits" OWNER TO admin;
-
---
--- Name: enum_Profiles_noiseLevel; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_Profiles_noiseLevel" AS ENUM (
-    '',
-    'Low',
-    'Medium',
-    'High'
-);
-
-
-ALTER TYPE public."enum_Profiles_noiseLevel" OWNER TO admin;
-
---
--- Name: enum_Reviews_reviewType; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_Reviews_reviewType" AS ENUM (
-    'user',
-    'property'
-);
-
-
-ALTER TYPE public."enum_Reviews_reviewType" OWNER TO admin;
-
---
--- Name: enum_Users_role; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_Users_role" AS ENUM (
-    'admin',
-    'landlord',
-    'tenant'
-);
-
-
-ALTER TYPE public."enum_Users_role" OWNER TO admin;
-
---
--- Name: enum_properties_propertyType; Type: TYPE; Schema: public; Owner: admin
---
-
-CREATE TYPE public."enum_properties_propertyType" AS ENUM (
-    'House',
-    'Apartment',
-    'Condo',
-    'Townhouse',
-    'Duplex',
-    'Studio',
-    'Loft',
-    'Bungalow',
-    'Cabin',
-    'Mobile Home',
-    'Other'
-);
-
-
-ALTER TYPE public."enum_properties_propertyType" OWNER TO admin;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- Name: CalendarEvents; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."CalendarEvents" (
-    id integer NOT NULL,
-    title character varying(255) NOT NULL,
-    "eventDate" date NOT NULL,
-    "startTime" time without time zone,
-    "endTime" time without time zone,
-    location character varying(255),
-    description text,
-    "groupId" integer NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL,
-    "userId" integer
-);
-
-
-ALTER TABLE public."CalendarEvents" OWNER TO admin;
-
---
--- Name: CalendarEvents_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."CalendarEvents_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."CalendarEvents_id_seq" OWNER TO admin;
-
---
--- Name: CalendarEvents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."CalendarEvents_id_seq" OWNED BY public."CalendarEvents".id;
-
-
---
--- Name: Chores; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Chores" (
-    id integer NOT NULL,
-    "choreName" character varying(255) NOT NULL,
-    room character varying(255) NOT NULL,
-    "assignedTo" integer,
-    completed boolean DEFAULT false,
-    "bannerImage" character varying(255),
-    "dueDate" timestamp with time zone NOT NULL,
-    "groupId" integer NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Chores" OWNER TO admin;
-
---
--- Name: Chores_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Chores_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Chores_id_seq" OWNER TO admin;
-
---
--- Name: Chores_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Chores_id_seq" OWNED BY public."Chores".id;
-
-
---
--- Name: Conversations; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Conversations" (
-    id integer NOT NULL,
-    "groupId" integer NOT NULL,
-    type public."enum_Conversations_type" NOT NULL,
-    name character varying(255),
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Conversations" OWNER TO admin;
-
---
--- Name: Conversations_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Conversations_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Conversations_id_seq" OWNER TO admin;
-
---
--- Name: Conversations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Conversations_id_seq" OWNED BY public."Conversations".id;
-
-
---
--- Name: Inventories; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Inventories" (
-    "itemId" integer NOT NULL,
-    "itemName" character varying(255) NOT NULL,
-    quantity integer NOT NULL,
-    "groupId" integer NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Inventories" OWNER TO admin;
-
---
--- Name: Inventories_itemId_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Inventories_itemId_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Inventories_itemId_seq" OWNER TO admin;
-
---
--- Name: Inventories_itemId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Inventories_itemId_seq" OWNED BY public."Inventories"."itemId";
-
-
---
--- Name: Items; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Items" (
-    "itemId" integer NOT NULL,
-    "listId" integer NOT NULL,
-    item character varying(255) NOT NULL,
-    "assignedTo" character varying(255),
-    purchased integer NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Items" OWNER TO admin;
-
---
--- Name: Items_itemId_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Items_itemId_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Items_itemId_seq" OWNER TO admin;
-
---
--- Name: Items_itemId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Items_itemId_seq" OWNED BY public."Items"."itemId";
-
-
---
--- Name: Lists; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Lists" (
-    "listId" integer NOT NULL,
-    "userId" integer NOT NULL,
-    "listName" character varying(255) NOT NULL,
-    "groupId" integer NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Lists" OWNER TO admin;
-
---
--- Name: Lists_listId_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Lists_listId_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Lists_listId_seq" OWNER TO admin;
-
---
--- Name: Lists_listId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Lists_listId_seq" OWNED BY public."Lists"."listId";
-
-
---
--- Name: Messages; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Messages" (
-    id integer NOT NULL,
-    "conversationId" integer NOT NULL,
-    "senderId" integer NOT NULL,
-    content text NOT NULL,
-    "readBy" json,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Messages" OWNER TO admin;
-
---
--- Name: Messages_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Messages_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Messages_id_seq" OWNER TO admin;
-
---
--- Name: Messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Messages_id_seq" OWNED BY public."Messages".id;
-
-
---
--- Name: Participants; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Participants" (
-    id integer NOT NULL,
-    "conversationId" integer NOT NULL,
-    "userId" integer NOT NULL,
-    role public."enum_Participants_role" DEFAULT 'tenant'::public."enum_Participants_role",
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Participants" OWNER TO admin;
-
---
--- Name: Participants_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Participants_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Participants_id_seq" OWNER TO admin;
-
---
--- Name: Participants_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Participants_id_seq" OWNED BY public."Participants".id;
-
-
---
--- Name: Profiles; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Profiles" (
-    id integer NOT NULL,
-    "cleaningHabits" public."enum_Profiles_cleaningHabits",
-    "noiseLevel" public."enum_Profiles_noiseLevel",
-    "sleepStart" character varying(255),
-    "sleepEnd" character varying(255),
-    alergies character varying(255),
-    "userId" integer NOT NULL,
-    "groupId" integer NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Profiles" OWNER TO admin;
-
---
--- Name: Profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Profiles_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Profiles_id_seq" OWNER TO admin;
-
---
--- Name: Profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Profiles_id_seq" OWNED BY public."Profiles".id;
-
-
---
--- Name: Reviews; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Reviews" (
-    "reviewId" integer NOT NULL,
-    "reviewType" public."enum_Reviews_reviewType" NOT NULL,
-    "reviewedItemId" integer NOT NULL,
-    "reviewerId" integer NOT NULL,
-    score integer NOT NULL,
-    description character varying(255),
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Reviews" OWNER TO admin;
-
---
--- Name: Reviews_reviewId_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Reviews_reviewId_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Reviews_reviewId_seq" OWNER TO admin;
-
---
--- Name: Reviews_reviewId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Reviews_reviewId_seq" OWNED BY public."Reviews"."reviewId";
-
-
---
--- Name: Users; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public."Users" (
-    id integer NOT NULL,
-    "firstName" character varying(255) NOT NULL,
-    "lastName" character varying(255) NOT NULL,
-    username character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    password character varying(255) NOT NULL,
-    role public."enum_Users_role" NOT NULL,
-    verified boolean DEFAULT false,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public."Users" OWNER TO admin;
-
---
--- Name: Users_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."Users_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Users_id_seq" OWNER TO admin;
-
---
--- Name: Users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."Users_id_seq" OWNED BY public."Users".id;
-
-
---
--- Name: expenses; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.expenses (
-    id integer NOT NULL,
-    "expenseName" character varying(255) NOT NULL,
-    "groupId" integer NOT NULL,
-    amount double precision NOT NULL,
-    "paidBy" integer NOT NULL,
-    "owedTo" integer NOT NULL,
-    completed boolean DEFAULT false NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public.expenses OWNER TO admin;
-
---
--- Name: expenses_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.expenses_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.expenses_id_seq OWNER TO admin;
-
---
--- Name: expenses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.expenses_id_seq OWNED BY public.expenses.id;
-
-
---
--- Name: group_participants; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.group_participants (
-    id integer NOT NULL,
-    "groupId" integer NOT NULL,
-    "tenantId" integer NOT NULL,
-    "joinedAt" timestamp with time zone
-);
-
-
-ALTER TABLE public.group_participants OWNER TO admin;
-
---
--- Name: group_participants_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.group_participants_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.group_participants_id_seq OWNER TO admin;
-
---
--- Name: group_participants_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.group_participants_id_seq OWNED BY public.group_participants.id;
-
-
---
--- Name: groups; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.groups (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    "landlordId" integer NOT NULL,
-    "propertyId" integer,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public.groups OWNER TO admin;
-
---
--- Name: groups_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.groups_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.groups_id_seq OWNER TO admin;
-
---
--- Name: groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
-
-
---
--- Name: properties; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.properties (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    address character varying(255) NOT NULL,
-    city character varying(255) NOT NULL,
-    "propertyDescription" text NOT NULL,
-    bedrooms integer NOT NULL,
-    price integer NOT NULL,
-    "propertyType" public."enum_properties_propertyType" NOT NULL,
-    availability boolean DEFAULT true NOT NULL,
-    "landlordId" integer NOT NULL,
-    "exteriorImage" bytea NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public.properties OWNER TO admin;
-
---
--- Name: properties_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.properties_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.properties_id_seq OWNER TO admin;
-
---
--- Name: properties_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.properties_id_seq OWNED BY public.properties.id;
-
-
---
--- Name: property_images; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.property_images (
-    id integer NOT NULL,
-    "propertyId" integer NOT NULL,
-    label character varying(255) NOT NULL,
-    image bytea NOT NULL,
-    description text,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public.property_images OWNER TO admin;
-
---
--- Name: property_images_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public.property_images_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.property_images_id_seq OWNER TO admin;
-
---
--- Name: property_images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public.property_images_id_seq OWNED BY public.property_images.id;
-
-
---
--- Name: stores; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.stores (
-    "itemID" integer NOT NULL,
-    "itemName" character varying(255),
-    store character varying(255) NOT NULL,
-    price character varying(255) NOT NULL,
-    "storeLink" character varying(255) NOT NULL,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public.stores OWNER TO admin;
-
---
--- Name: stores_itemID_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE public."stores_itemID_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."stores_itemID_seq" OWNER TO admin;
-
---
--- Name: stores_itemID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE public."stores_itemID_seq" OWNED BY public.stores."itemID";
-
-
---
--- Name: CalendarEvents id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."CalendarEvents" ALTER COLUMN id SET DEFAULT nextval('public."CalendarEvents_id_seq"'::regclass);
-
-
---
--- Name: Chores id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Chores" ALTER COLUMN id SET DEFAULT nextval('public."Chores_id_seq"'::regclass);
-
-
---
--- Name: Conversations id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Conversations" ALTER COLUMN id SET DEFAULT nextval('public."Conversations_id_seq"'::regclass);
-
-
---
--- Name: Inventories itemId; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Inventories" ALTER COLUMN "itemId" SET DEFAULT nextval('public."Inventories_itemId_seq"'::regclass);
-
-
---
--- Name: Items itemId; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Items" ALTER COLUMN "itemId" SET DEFAULT nextval('public."Items_itemId_seq"'::regclass);
-
-
---
--- Name: Lists listId; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Lists" ALTER COLUMN "listId" SET DEFAULT nextval('public."Lists_listId_seq"'::regclass);
-
-
---
--- Name: Messages id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Messages" ALTER COLUMN id SET DEFAULT nextval('public."Messages_id_seq"'::regclass);
-
-
---
--- Name: Participants id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Participants" ALTER COLUMN id SET DEFAULT nextval('public."Participants_id_seq"'::regclass);
-
-
---
--- Name: Profiles id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Profiles" ALTER COLUMN id SET DEFAULT nextval('public."Profiles_id_seq"'::regclass);
-
-
---
--- Name: Reviews reviewId; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Reviews" ALTER COLUMN "reviewId" SET DEFAULT nextval('public."Reviews_reviewId_seq"'::regclass);
-
-
---
--- Name: Users id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Users" ALTER COLUMN id SET DEFAULT nextval('public."Users_id_seq"'::regclass);
-
-
---
--- Name: expenses id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.expenses ALTER COLUMN id SET DEFAULT nextval('public.expenses_id_seq'::regclass);
-
-
---
--- Name: group_participants id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.group_participants ALTER COLUMN id SET DEFAULT nextval('public.group_participants_id_seq'::regclass);
-
-
---
--- Name: groups id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.groups_id_seq'::regclass);
-
-
---
--- Name: properties id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.properties ALTER COLUMN id SET DEFAULT nextval('public.properties_id_seq'::regclass);
-
-
---
--- Name: property_images id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.property_images ALTER COLUMN id SET DEFAULT nextval('public.property_images_id_seq'::regclass);
-
-
---
--- Name: stores itemID; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.stores ALTER COLUMN "itemID" SET DEFAULT nextval('public."stores_itemID_seq"'::regclass);
-
-
---
--- Name: CalendarEvents CalendarEvents_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."CalendarEvents"
-    ADD CONSTRAINT "CalendarEvents_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Chores Chores_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Chores"
-    ADD CONSTRAINT "Chores_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Conversations Conversations_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Conversations"
-    ADD CONSTRAINT "Conversations_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Inventories Inventories_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Inventories"
-    ADD CONSTRAINT "Inventories_pkey" PRIMARY KEY ("itemId");
-
-
---
--- Name: Items Items_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Items"
-    ADD CONSTRAINT "Items_pkey" PRIMARY KEY ("itemId");
-
-
---
--- Name: Lists Lists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Lists"
-    ADD CONSTRAINT "Lists_pkey" PRIMARY KEY ("listId", "userId");
-
-
---
--- Name: Messages Messages_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Messages"
-    ADD CONSTRAINT "Messages_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Participants Participants_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Participants"
-    ADD CONSTRAINT "Participants_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Profiles Profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Profiles"
-    ADD CONSTRAINT "Profiles_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Reviews Reviews_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Reviews"
-    ADD CONSTRAINT "Reviews_pkey" PRIMARY KEY ("reviewId");
-
-
---
--- Name: Users Users_email_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Users"
-    ADD CONSTRAINT "Users_email_key" UNIQUE (email);
-
-
---
--- Name: Users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Users"
-    ADD CONSTRAINT "Users_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Users Users_username_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Users"
-    ADD CONSTRAINT "Users_username_key" UNIQUE (username);
-
-
---
--- Name: expenses expenses_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.expenses
-    ADD CONSTRAINT expenses_pkey PRIMARY KEY (id);
-
-
---
--- Name: group_participants group_participants_groupId_tenantId_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.group_participants
-    ADD CONSTRAINT "group_participants_groupId_tenantId_key" UNIQUE ("groupId", "tenantId");
-
-
---
--- Name: group_participants group_participants_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.group_participants
-    ADD CONSTRAINT group_participants_pkey PRIMARY KEY (id);
-
-
---
--- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.groups
-    ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
-
-
---
--- Name: properties properties_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.properties
-    ADD CONSTRAINT properties_pkey PRIMARY KEY (id);
-
-
---
--- Name: property_images property_images_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.property_images
-    ADD CONSTRAINT property_images_pkey PRIMARY KEY (id);
-
-
---
--- Name: stores stores_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.stores
-    ADD CONSTRAINT stores_pkey PRIMARY KEY ("itemID");
-
-
---
--- Name: CalendarEvents CalendarEvents_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."CalendarEvents"
-    ADD CONSTRAINT "CalendarEvents_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: CalendarEvents CalendarEvents_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."CalendarEvents"
-    ADD CONSTRAINT "CalendarEvents_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
-
---
--- Name: Chores Chores_assignedTo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Chores"
-    ADD CONSTRAINT "Chores_assignedTo_fkey" FOREIGN KEY ("assignedTo") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
-
---
--- Name: Chores Chores_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Chores"
-    ADD CONSTRAINT "Chores_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Conversations Conversations_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Conversations"
-    ADD CONSTRAINT "Conversations_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Inventories Inventories_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Inventories"
-    ADD CONSTRAINT "Inventories_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Lists Lists_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Lists"
-    ADD CONSTRAINT "Lists_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Messages Messages_conversationId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Messages"
-    ADD CONSTRAINT "Messages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES public."Conversations"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Messages Messages_senderId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Messages"
-    ADD CONSTRAINT "Messages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Participants Participants_conversationId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Participants"
-    ADD CONSTRAINT "Participants_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES public."Conversations"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Participants Participants_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Participants"
-    ADD CONSTRAINT "Participants_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: Profiles Profiles_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public."Profiles"
-    ADD CONSTRAINT "Profiles_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: expenses expenses_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.expenses
-    ADD CONSTRAINT "expenses_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: expenses expenses_owedTo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.expenses
-    ADD CONSTRAINT "expenses_owedTo_fkey" FOREIGN KEY ("owedTo") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: expenses expenses_paidBy_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.expenses
-    ADD CONSTRAINT "expenses_paidBy_fkey" FOREIGN KEY ("paidBy") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: group_participants group_participants_groupId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.group_participants
-    ADD CONSTRAINT "group_participants_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: group_participants group_participants_tenantId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.group_participants
-    ADD CONSTRAINT "group_participants_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: groups groups_landlordId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.groups
-    ADD CONSTRAINT "groups_landlordId_fkey" FOREIGN KEY ("landlordId") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: groups groups_propertyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.groups
-    ADD CONSTRAINT "groups_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES public.properties(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
-
---
--- Name: properties properties_landlordId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.properties
-    ADD CONSTRAINT "properties_landlordId_fkey" FOREIGN KEY ("landlordId") REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: property_images property_images_propertyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.property_images
-    ADD CONSTRAINT "property_images_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES public.properties(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- PostgreSQL database dump complete
---
-
+-- MySQL dump 10.13  Distrib 8.0.42, for Linux (x86_64)
+--
+-- Host: localhost    Database: homey_db
+-- ------------------------------------------------------
+-- Server version	8.0.42
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `calendar_events`
+--
+
+DROP TABLE IF EXISTS `calendar_events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `calendar_events` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `event_date` date NOT NULL,
+  `start_time` time DEFAULT NULL,
+  `end_time` time DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `description` text,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `calendar_events_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Chores`
+--
+
+DROP TABLE IF EXISTS `Chores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Chores` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `chore_name` varchar(255) NOT NULL,
+  `room` varchar(255) NOT NULL,
+  `assigned_to` int DEFAULT NULL,
+  `completed` tinyint(1) DEFAULT NULL,
+  `banner_image` varchar(255) DEFAULT NULL,
+  `due_date` datetime NOT NULL,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `assigned_to` (`assigned_to`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `chores_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`),
+  CONSTRAINT `chores_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `conversation`
+--
+
+DROP TABLE IF EXISTS `conversation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `conversation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `type` enum('dm','group') NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `conversation_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `expenses`
+--
+
+DROP TABLE IF EXISTS `expenses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `expenses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `expense_name` varchar(255) NOT NULL,
+  `group_id` int NOT NULL,
+  `amount` float NOT NULL,
+  `paid_by` int NOT NULL,
+  `owed_to` int NOT NULL,
+  `completed` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  KEY `paid_by` (`paid_by`),
+  KEY `owed_to` (`owed_to`),
+  CONSTRAINT `expenses_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `expenses_ibfk_2` FOREIGN KEY (`paid_by`) REFERENCES `users` (`id`),
+  CONSTRAINT `expenses_ibfk_3` FOREIGN KEY (`owed_to`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `group_participant`
+--
+
+DROP TABLE IF EXISTS `group_participant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_participant` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `tenant_id` int NOT NULL,
+  `joined_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  KEY `tenant_id` (`tenant_id`),
+  CONSTRAINT `group_participant_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `group_participant_ibfk_2` FOREIGN KEY (`tenant_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `groups` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `landlord_id` int NOT NULL,
+  `property_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `landlord_id` (`landlord_id`),
+  KEY `property_id` (`property_id`),
+  CONSTRAINT `groups_ibfk_1` FOREIGN KEY (`landlord_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `groups_ibfk_2` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `inventory`
+--
+
+DROP TABLE IF EXISTS `inventory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inventory` (
+  `item_id` int NOT NULL AUTO_INCREMENT,
+  `item_name` varchar(255) NOT NULL,
+  `quantity` int NOT NULL,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`item_id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `item`
+--
+
+DROP TABLE IF EXISTS `item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `item` (
+  `item_id` int NOT NULL AUTO_INCREMENT,
+  `list_id` int NOT NULL,
+  `item` varchar(255) NOT NULL,
+  `assigned_to` varchar(255) DEFAULT NULL,
+  `purchased` int NOT NULL,
+  PRIMARY KEY (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `list`
+--
+
+DROP TABLE IF EXISTS `list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `list` (
+  `list_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `list_name` varchar(255) NOT NULL,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`list_id`,`user_id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `list_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `conversation_id` int NOT NULL,
+  `sender_id` int NOT NULL,
+  `content` text NOT NULL,
+  `read_by` json DEFAULT NULL,
+  `created_at` datetime DEFAULT (now()),
+  `updated_at` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`),
+  KEY `conversation_id` (`conversation_id`),
+  KEY `sender_id` (`sender_id`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversation` (`id`),
+  CONSTRAINT `message_ibfk_2` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `participant`
+--
+
+DROP TABLE IF EXISTS `participant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `participant` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `conversation_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `role` enum('tenant','landlord') NOT NULL,
+  `created_at` datetime DEFAULT (now()),
+  `updated_at` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`),
+  KEY `conversation_id` (`conversation_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `participant_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversation` (`id`),
+  CONSTRAINT `participant_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `profiles`
+--
+
+DROP TABLE IF EXISTS `profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `profiles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cleaning_habits` enum('none','low','medium','high') DEFAULT NULL,
+  `noise_level` enum('none','low','medium','high') DEFAULT NULL,
+  `sleep_start` varchar(255) DEFAULT NULL,
+  `sleep_end` varchar(255) DEFAULT NULL,
+  `alergies` varchar(255) DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `profiles_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `properties`
+--
+
+DROP TABLE IF EXISTS `properties`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `properties` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `property_description` text NOT NULL,
+  `bedrooms` int NOT NULL,
+  `price` int NOT NULL,
+  `property_type` enum('House','Apartment','Condo','Townhouse','Duplex','Studio','Loft','Bungalow','Cabin','MobileHome','Other') NOT NULL,
+  `availability` tinyint(1) NOT NULL,
+  `landlord_id` int NOT NULL,
+  `exterior_image` longblob NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `landlord_id` (`landlord_id`),
+  CONSTRAINT `properties_ibfk_1` FOREIGN KEY (`landlord_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `property_images`
+--
+
+DROP TABLE IF EXISTS `property_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `property_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `image` longblob NOT NULL,
+  `description` text,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `property_id` (`property_id`),
+  CONSTRAINT `property_images_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `reviews`
+--
+
+DROP TABLE IF EXISTS `reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviews` (
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `review_type` enum('user','property') NOT NULL,
+  `reviewed_item_id` int NOT NULL,
+  `reviewer_id` int NOT NULL,
+  `score` int NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`review_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `store`
+--
+
+DROP TABLE IF EXISTS `store`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `store` (
+  `item_id` int NOT NULL AUTO_INCREMENT,
+  `item_name` varchar(255) NOT NULL,
+  `store` varchar(255) NOT NULL,
+  `price` varchar(255) NOT NULL,
+  `store_link` varchar(255) NOT NULL,
+  PRIMARY KEY (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('admin','landlord','tenant') NOT NULL,
+  `verified` tinyint(1) DEFAULT NULL,
+  `createdAt` datetime DEFAULT (now()),
+  `updatedAt` datetime DEFAULT (now()),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-06-27 21:15:04

@@ -61,7 +61,7 @@ export default function TenantPropertyDetailsScreen() {
 
     const fetchLandlordRating = async () => {
         try {
-            const response = await get<any>("/api/reviews", { reviewType: "user", reviewedItemId: property.landlord.id });
+            const response = await get<any>("/api/reviews/", { reviewType: "user", reviewedItemId: property.landlord.id });
             if (response && response.data.length > 0) {
                 let sum = 0;
                 response.data.forEach((review: any) => {
@@ -79,7 +79,7 @@ export default function TenantPropertyDetailsScreen() {
 
     const fetchPropertyRating = async () => {
         try {
-            const response = await get<any>("/api/reviews", { reviewType: "property", reviewedItemId: property.id });
+            const response = await get<any>("/api/reviews/", { reviewType: "property", reviewedItemId: property.id });
             if (response && response.data.length > 0) {
                 let sum = 0;
                 response.data.forEach((review: any) => {
